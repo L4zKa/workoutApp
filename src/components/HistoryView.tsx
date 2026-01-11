@@ -22,7 +22,7 @@ export function HistoryView(props: {
   const sessions = props.sessions;
 
   return (
-    <div className={styles.grid}>
+    <div className={styles.box}>
       <Card>
         <CardHeader header={<Subtitle1>Recent sessions</Subtitle1>} />
         <div className={styles.cardBody}>

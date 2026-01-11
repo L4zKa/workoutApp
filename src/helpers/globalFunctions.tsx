@@ -42,11 +42,14 @@ export const useStyles = await makeStyles({
     alignItems: "center",
     gap: "8px",
     flexWrap: "wrap",
+    marginTop: "8px",
   },
-  grid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-    gap: "12px",
+  box: {
+    display: "flex",
+    flexDirection: "column",
+    boxShadow: "gray 0 1px 8px",
+    borderRadius: "8px",
+    padding: "15px",
   },
   cardBody: {
     padding: "12px",

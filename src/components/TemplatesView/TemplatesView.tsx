@@ -1,10 +1,7 @@
-import React, { useState } from "react";
-import { useStyles } from "../../helpers/globalFunctions";
+import { useState } from "react";
 import type { WorkoutTemplate } from "../../storage";
 import {
   Button,
-  Card,
-  CardHeader,
   createTableColumn,
   DataGrid,
   DataGridBody,
@@ -14,14 +11,12 @@ import {
   DataGridRow,
   Divider,
   Input,
-  Label,
-  Subtitle1,
   TableCellLayout,
-  Text,
   type TableColumnDefinition,
 } from "@fluentui/react-components";
 import { AddRegular, DeleteRegular } from "@fluentui/react-icons";
 import { EditTemplateDialog } from "./EditTemplateDialog";
+import { useStyles } from "../../helpers/globalFunctions";
 
 export function TemplatesView(props: {
   templates: WorkoutTemplate[];
@@ -39,15 +34,10 @@ export function TemplatesView(props: {
   deleteTemplate(templateId: string): void;
 }) {
   const styles = useStyles();
-  const [newTemplateName, setNewTemplateName] = React.useState("");
-  const [exerciseName, setExerciseName] = React.useState("");
   const [selectedTemplateObject, setSelectedTemplateObject] = useState<
     WorkoutTemplate | undefined
   >();
-
-  const active =
-    props.templates.find((t) => t.id === props.activeTemplateId) ??
-    props.templates[0];
+  const [newTemplateName, setNewTemplateName] = useState<string>("");
 
   const columns: TableColumnDefinition<WorkoutTemplate>[] = [
     createTableColumn<WorkoutTemplate>({
@@ -60,7 +50,7 @@ export function TemplatesView(props: {
     createTableColumn<WorkoutTemplate>({
       columnId: "Übungen",
       renderHeaderCell: () => {
-        return "Übungen";
+        return "Anzahl Übungen";
       },
       renderCell: (item) => (
         <TableCellLayout>{item.exercises.length}</TableCellLayout>
@@ -103,7 +93,7 @@ export function TemplatesView(props: {
           );
         }}
       />
-      <div style={{ display: "flex", flexDirection: "column" }}>
+      <div className={styles.box}>
         <DataGrid items={props.templates} columns={columns}>
           <DataGridHeader>
             <DataGridRow>
@@ -125,128 +115,28 @@ export function TemplatesView(props: {
             )}
           </DataGridBody>
           <div
-            style={{ width: "100%", display: "flex", justifyContent: "center" }}
+            style={{
+              padding: "5px",
+            }}
           >
-            <Button appearance="transparent" icon={<AddRegular />}>
-              Neues Template
-            </Button>
-          </div>
-        </DataGrid>
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <Card>
-          <CardHeader header={<Subtitle1>Templates</Subtitle1>} />
-          <div className={styles.cardBody}>
-            <Label>New template</Label>
             <Input
               value={newTemplateName}
-              onChange={(_, d) => setNewTemplateName(d.value)}
-              placeholder="e.g. Full Body"
-            />
-            <Button
-              onClick={() => {
-                props.createTemplate(newTemplateName);
-                setNewTemplateName("");
-              }}
-            >
-              Add
-            </Button>
-
-            <Divider />
-
-            <Label>Pick template</Label>
-            <select
-              value={active?.id ?? ""}
-              onChange={(e) => props.setActiveTemplateId(e.target.value)}
-              style={{
-                padding: 10,
-                borderRadius: 8,
-                border: "1px solid rgba(0,0,0,0.15)",
-                background: "transparent",
-                color: "inherit",
-              }}
-            >
-              {props.templates.map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.name}
-                </option>
-              ))}
-            </select>
-
-            {active && (
-              <>
-                <Divider />
-                <Label>Rename</Label>
-                <Input
-                  value={active.name}
-                  onChange={(_, d) => props.renameTemplate(active.id, d.value)}
-                />
-
-                <div className={styles.row}>
-                  <Button
-                    onClick={() => props.deleteTemplate(active.id)}
-                    disabled={props.templates.length <= 1}
-                  >
-                    Delete template
-                  </Button>
-                  <Text className={styles.tiny}>
-                    (keeps at least 1 template)
-                  </Text>
-                </div>
-              </>
-            )}
-          </div>
-        </Card>
-
-        <Card>
-          <CardHeader header={<Subtitle1>Exercises</Subtitle1>} />
-          <div className={styles.cardBody}>
-            {!active ? (
-              <Text className={styles.tiny}>Create a template first.</Text>
-            ) : (
-              <>
-                <Label>Add exercise</Label>
-                <Input
-                  value={exerciseName}
-                  onChange={(_, d) => setExerciseName(d.value)}
-                  placeholder="e.g. Deadlift"
-                />
+              onChange={(_, data) => setNewTemplateName(data.value)}
+              placeholder="neuer Templatename"
+              contentAfter={
                 <Button
-                  appearance="primary"
                   onClick={() => {
-                    props.addExerciseToTemplate(active.id, exerciseName, 0, 0);
-                    setExerciseName("");
+                    props.createTemplate(newTemplateName);
+                    setNewTemplateName("");
                   }}
-                >
-                  Add
-                </Button>
-
-                <Divider />
-
-                {active.exercises.length === 0 ? (
-                  <Text className={styles.tiny}>No exercises yet.</Text>
-                ) : (
-                  active.exercises.map((e) => (
-                    <div key={e.id} className={styles.exerciseRow}>
-                      <Text>{e.name}</Text>
-                      <Button
-                        size="small"
-                        onClick={() =>
-                          props.removeExerciseFromTemplate(active.id, e.id)
-                        }
-                      >
-                        Remove
-                      </Button>
-                    </div>
-                  ))
-                )}
-              </>
-            )}
+                  appearance="transparent"
+                  icon={<AddRegular />}
+                />
+              }
+            />
           </div>
-        </Card>
+          <Divider />
+        </DataGrid>
       </div>
     </>
   );

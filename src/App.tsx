@@ -206,6 +206,7 @@ export default function App() {
   return (
     <FluentProvider
       theme={dark ? webDarkTheme : webLightTheme}
+      style={{ height: "100vh", padding: "10px" }}
       /* className={styles.page} */
     >
       <div className={styles.shell}>

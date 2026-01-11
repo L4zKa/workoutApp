@@ -11,6 +11,7 @@ import {
   Divider,
   Field,
   Input,
+  MessageBar,
   Subtitle2,
   Text,
 } from "@fluentui/react-components";
@@ -63,27 +64,33 @@ export function EditTemplateDialog(props: IEditTemplateDialogProps) {
               <Input value={name ?? ""} onChange={(_, d) => setName(d.value)} />
             </Field>
             <Divider />
+
             <Subtitle2>Übungen</Subtitle2>
             <div>
-              {newExercises?.map((e) => (
-                <div key={e.id} className={styles.exerciseRow}>
-                  <Text>{e.name}</Text>
-                  <Text>
-                    {e.setGoal ?? "0"} x {e.repsGoal ?? "0"}
-                  </Text>
-                  <Button
-                    size="small"
-                    onClick={() => {
-                      const newE = newExercises?.filter((x) => x.id != e.id);
-                      setNewExercises(newE);
-                    }}
-                  >
-                    Löschen
-                  </Button>
-                </div>
-              ))}
+              {newExercises && newExercises.length != 0 ? (
+                newExercises.map((e, i) => (
+                  <div key={i} className={styles.exerciseRow}>
+                    <Text>{e.name}</Text>
+                    <Text>
+                      {e.setGoal ?? "0"} x {e.repsGoal ?? "0"}
+                    </Text>
+                    <Button
+                      size="small"
+                      onClick={() => {
+                        const newE = newExercises?.filter((x) => x.id != e.id);
+                        setNewExercises(newE);
+                      }}
+                    >
+                      Löschen
+                    </Button>
+                  </div>
+                ))
+              ) : (
+                <MessageBar intent="info">"Keine Übungen vorhanden"</MessageBar>
+              )}
             </div>
             <Divider />
+
             <Subtitle2>Übung hinzufügen</Subtitle2>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "5px" }}>
               <Field label={"Name"}>
@@ -136,7 +143,7 @@ export function EditTemplateDialog(props: IEditTemplateDialogProps) {
               }}
             >
               Hinzufügen
-            </Button>{" "}
+            </Button>
             <Divider />
           </DialogContent>
 
