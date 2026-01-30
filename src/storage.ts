@@ -37,6 +37,7 @@ export type WorkoutSession = {
 
 export type AppState = {
   version: 1;
+  isDarkMode: boolean;
   templates: WorkoutTemplate[];
   sessions: WorkoutSession[];
 };
@@ -74,6 +75,7 @@ export function defaultState(): AppState {
 
   return {
     version: 1,
+    isDarkMode: false,
     templates: [
       {
         id: pushId,

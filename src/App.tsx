@@ -1,15 +1,9 @@
 import * as React from "react";
 import {
   FluentProvider,
-  Label,
-  Switch,
   TabList,
   Tab,
   Title2,
-  type BrandVariants,
-  createLightTheme,
-  createDarkTheme,
-  type Theme,
 } from "@fluentui/react-components";
 
 import {
@@ -25,67 +19,38 @@ import { useStyles } from "./helpers/globalFunctions";
 import { WorkoutView } from "./components/WorkoutView";
 import { TemplatesView } from "./components/TemplatesView/TemplatesView";
 import { HistoryView } from "./components/HistoryView";
+import { DarkmodeSwitch } from "./components/shared/DarkmodeSwitch";
+import { useEffect, useMemo } from "react";
+import { myDarkTheme, myLightTheme } from "./appTheme";
 
 type View = "workout" | "templates" | "history";
 
 export default function App() {
   const styles = useStyles();
-  const myNewTheme: BrandVariants = {
-    10: "#03020C",
-    20: "#0D1144",
-    30: "#121678",
-    40: "#23169C",
-    50: "#3D14BB",
-    60: "#5B0DD5",
-    70: "#7902EA",
-    80: "#9600F8",
-    90: "#B114FF",
-    100: "#C730FF",
-    110: "#DB47FF",
-    120: "#EC5DFF",
-    130: "#FB73FF",
-    140: "#FF90F9",
-    150: "#FFABF3",
-    160: "#FFC4F1",
-  };
-
-  const myLightTheme: Theme = {
-    ...createLightTheme(myNewTheme),
-  };
-
-  const myDarkTheme: Theme = {
-    ...createDarkTheme(myNewTheme),
-  };
-
-  myDarkTheme.colorBrandForeground1 = myNewTheme[110];
-  myDarkTheme.colorBrandForeground2 = myNewTheme[120];
-
-  const [dark, setDark] = React.useState(false);
 
   const [state, setState] = React.useState<AppState>(() => loadState());
   const [view, setView] = React.useState<View>("workout");
 
   const [activeTemplateId, setActiveTemplateId] = React.useState<string>(
-    state.templates[0]?.id ?? ""
+    state.templates[0]?.id ?? "",
   );
 
   const [activeSessionId, setActiveSessionId] = React.useState<string>("");
 
-  // Persist
-  React.useEffect(() => {
+  useEffect(() => {
     saveState(state);
   }, [state]);
 
-  const activeTemplate = React.useMemo(
+  const activeTemplate = useMemo(
     () =>
       state.templates.find((t) => t.id === activeTemplateId) ??
       state.templates[0],
-    [state.templates, activeTemplateId]
+    [state.templates, activeTemplateId],
   );
 
-  const activeSession = React.useMemo(
+  const activeSession = useMemo(
     () => state.sessions.find((s) => s.id === activeSessionId),
-    [state.sessions, activeSessionId]
+    [state.sessions, activeSessionId],
   );
 
   const startSession = () => {
@@ -115,7 +80,7 @@ export default function App() {
       sessions: prev.sessions.map((s) =>
         s.id === activeSession.id
           ? { ...s, endedAt: new Date().toISOString() }
-          : s
+          : s,
       ),
     }));
     setActiveSessionId("");
@@ -137,7 +102,7 @@ export default function App() {
         return {
           ...s,
           exercises: s.exercises.map((ex) =>
-            ex.id === exerciseId ? { ...ex, sets: [...ex.sets, set] } : ex
+            ex.id === exerciseId ? { ...ex, sets: [...ex.sets, set] } : ex,
           ),
         };
       }),
@@ -155,7 +120,7 @@ export default function App() {
           exercises: s.exercises.map((ex) =>
             ex.id === exerciseId
               ? { ...ex, sets: ex.sets.filter((st) => st.id !== setId) }
-              : ex
+              : ex,
           ),
         };
       }),
@@ -182,7 +147,7 @@ export default function App() {
     setState((prev) => ({
       ...prev,
       templates: prev.templates.map((t) =>
-        t.id === id ? { ...t, name: trimmed } : t
+        t.id === id ? { ...t, name: trimmed } : t,
       ),
     }));
   };
@@ -191,7 +156,7 @@ export default function App() {
     templateId: string,
     exerciseName: string,
     setGoal: number,
-    repsGoal: number
+    repsGoal: number,
   ) => {
     const trimmed = exerciseName.trim();
     if (!trimmed) return;
@@ -206,21 +171,21 @@ export default function App() {
                 { id: newId(), name: trimmed, setGoal, repsGoal },
               ],
             }
-          : t
+          : t,
       ),
     }));
   };
 
   const removeExerciseFromTemplate = (
     templateId: string,
-    exerciseId: string
+    exerciseId: string,
   ) => {
     setState((prev) => ({
       ...prev,
       templates: prev.templates.map((t) =>
         t.id === templateId
           ? { ...t, exercises: t.exercises.filter((e) => e.id !== exerciseId) }
-          : t
+          : t,
       ),
     }));
   };
@@ -238,20 +203,22 @@ export default function App() {
 
   return (
     <FluentProvider
-      theme={dark ? myDarkTheme : myLightTheme}
-      style={{ height: "100vh", padding: "10px" }}
-      /* className={styles.page} */
+      theme={state.isDarkMode ? myDarkTheme : myLightTheme}
+      style={{ height: "97.8vh", padding: "10px", overflow: "auto" }}
     >
       <div className={styles.shell}>
         {/* Header */}
         <div className={styles.topbar}>
           <Title2>Workout Tracker</Title2>
           <div className={styles.row}>
-            <Label htmlFor="darkMode">Dark</Label>
-            <Switch
-              id="darkMode"
-              checked={dark}
-              onChange={(_, data) => setDark(!!data.checked)}
+            <DarkmodeSwitch
+              checked={state.isDarkMode}
+              onChange={(event) =>
+                setState((prev) => ({
+                  ...prev,
+                  isDarkMode: event.target.checked,
+                }))
+              }
             />
           </div>
         </div>
@@ -265,6 +232,7 @@ export default function App() {
           <Tab value="history">History</Tab>
         </TabList>
 
+        {/* Content */}
         {view === "workout" && (
           <WorkoutView
             templates={state.templates}
