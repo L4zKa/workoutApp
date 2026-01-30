@@ -51,23 +51,11 @@ export const useStyles = await makeStyles({
     borderRadius: "8px",
     padding: "15px",
   },
-  cardBody: {
-    padding: "12px",
-    display: "flex",
-    flexDirection: "column",
-    gap: "10px",
-  },
   exerciseRow: {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
     padding: "1px",
-  },
-  setRow: {
-    display: "grid",
-    gridTemplateColumns: "1fr 1fr auto",
-    gap: "8px",
-    alignItems: "end",
   },
   tiny: {
     color: tokens.colorNeutralForeground3,

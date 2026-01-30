@@ -16,9 +16,9 @@ import {
   newId,
 } from "./storage";
 import { useStyles } from "./helpers/globalFunctions";
-import { WorkoutView } from "./components/WorkoutView";
-import { TemplatesView } from "./components/TemplatesView/TemplatesView";
-import { HistoryView } from "./components/HistoryView";
+import { WorkoutView } from "./components/Workout/WorkoutView";
+import { TemplatesView } from "./components/Templates/TemplatesView";
+import { HistoryView } from "./components/History/HistoryView";
 import { DarkmodeSwitch } from "./components/shared/DarkmodeSwitch";
 import { useEffect, useMemo } from "react";
 import { myDarkTheme, myLightTheme } from "./appTheme";

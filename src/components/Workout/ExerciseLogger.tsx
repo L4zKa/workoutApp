@@ -1,10 +1,14 @@
 import { useState } from "react";
-import type { Exercise, TemplateExercise, WorkoutTemplate } from "../storage";
+import type {
+  Exercise,
+  TemplateExercise,
+  WorkoutTemplate,
+} from "../../storage";
 import {
   formatTime,
   isFiniteNumber,
   useStyles,
-} from "../helpers/globalFunctions";
+} from "../../helpers/globalFunctions";
 import {
   Button,
   Divider,

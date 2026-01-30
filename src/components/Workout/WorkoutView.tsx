@@ -1,15 +1,8 @@
-import type { WorkoutSession, WorkoutTemplate } from "../storage";
-import {
-  Button,
-  Divider,
-  Dropdown,
-  Text,
-  Option,
-  Field,
-  Subtitle1,
-} from "@fluentui/react-components";
-import { formatTime, useStyles } from "../helpers/globalFunctions";
+import type { WorkoutSession, WorkoutTemplate } from "../../storage";
+import { Button, Divider, Text, Subtitle1 } from "@fluentui/react-components";
+import { formatTime, useStyles } from "../../helpers/globalFunctions";
 import ExerciseLogger from "./ExerciseLogger";
+import { SelectTemplate } from "./SelectTemplate";
 
 export function WorkoutView(props: {
   templates: WorkoutTemplate[];
@@ -28,35 +21,12 @@ export function WorkoutView(props: {
   return (
     <div className={styles.box}>
       {!props.activeSession ? (
-        <>
-          <Field label={"Template auswählen"}>
-            <Dropdown
-              value={
-                props.templates.find((x) => x.id == props.activeTemplateId)
-                  ?.name ?? ""
-              }
-              defaultSelectedOptions={[props.activeTemplateId]}
-              onOptionSelect={(_, data) => {
-                props.setActiveTemplateId(data.optionValue ?? "");
-              }}
-            >
-              {props.templates.map((t) => (
-                <Option key={t.id} value={t.id}>
-                  {t.name}
-                </Option>
-              ))}
-            </Dropdown>
-          </Field>
-          <div className={styles.row}>
-            <Button
-              appearance="primary"
-              onClick={props.startSession}
-              disabled={!props.templates.length}
-            >
-              Workout starten
-            </Button>
-          </div>
-        </>
+        <SelectTemplate
+          activeTemplateId={props.activeTemplateId}
+          templates={props.templates}
+          startSession={props.startSession}
+          setActiveTemplateId={props.setActiveTemplateId}
+        />
       ) : (
         <>
           <div
@@ -89,6 +59,7 @@ export function WorkoutView(props: {
               )}
             />
           ))}
+
           <Button
             onClick={props.endSession}
             disabled={!props.activeSession || !!props.activeSession.endedAt}
